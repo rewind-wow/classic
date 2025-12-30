@@ -902,7 +902,7 @@ void Creature::Update(uint32 update_diff, uint32 diff)
             bool leash = false;
             if (HasCreatureState(CSTATE_COMBAT))
             {
-                if (WorldTimer::tickTime() % 3000 <= update_diff)
+                if (WorldTimer::tickTime() % 1750 <= update_diff)
                 {
                     if (GetCombatTime(false) > sWorld.getConfig(CONFIG_UINT32_LONGCOMBAT))
                     {
