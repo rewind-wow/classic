@@ -119,6 +119,46 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(char* args)
     return true;
 }
 
+bool ChatHandler::HandleAccountRealmlistCommand(char* args)
+{
+    uint32 realmFilter = 0;
+    bool const hasFilter = ExtractUInt32(&args, realmFilter);
+
+    std::unique_ptr<QueryResult> result;
+    if (hasFilter)
+        result = LoginDatabase.PQuery("SELECT `id`, `name`, `address`, `port`, `realmflags`, `population`, `realmbuilds` FROM `realmlist` WHERE `id` = %u", realmFilter);
+    else
+        result = LoginDatabase.Query("SELECT `id`, `name`, `address`, `port`, `realmflags`, `population`, `realmbuilds` FROM `realmlist` ORDER BY `id`");
+
+    if (!result)
+    {
+        if (hasFilter)
+            PSendSysMessage("Realm %u not found.", realmFilter);
+        else
+            SendSysMessage("No realms found.");
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    SendSysMessage("Realm list:");
+    do
+    {
+        Field* fields = result->Fetch();
+        uint32 id = fields[0].GetUInt32();
+        std::string name = fields[1].GetCppString();
+        std::string address = fields[2].GetCppString();
+        uint32 port = fields[3].GetUInt32();
+        uint32 flags = fields[4].GetUInt32();
+        float population = fields[5].GetFloat();
+        std::string builds = fields[6].GetCppString();
+
+        PSendSysMessage(" - [%u] %s (%s:%u) flags:%u pop:%.2f builds:%s", id, name.c_str(), address.c_str(), port, flags, population, builds.c_str());
+    }
+    while (result->NextRow());
+
+    return true;
+}
+
 bool ChatHandler::HandleAccountSetGmLevelRealmCommand(char* args)
 {
     char* accountStr = ExtractOptNotLastArg(&args);

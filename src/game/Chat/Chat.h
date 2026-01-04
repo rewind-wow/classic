@@ -399,6 +399,7 @@ class ChatHandler
         bool HandleAccountOnlineListCommand(char* args);
         bool HandleAccountPasswordCommand(char* args);
         bool HandleAccountSetAddonCommand(char* args);
+        bool HandleAccountRealmlistCommand(char* args);
         bool HandleAccountSetGmLevelCommand(char* args);
         bool HandleAccountSetGmLevelRealmCommand(char* args);
         bool HandleAccountSetPasswordCommand(char* args);
