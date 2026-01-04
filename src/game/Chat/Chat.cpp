@@ -134,6 +134,7 @@ ChatCommand * ChatHandler::getCommandTable()
     {
         { "addon",          SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetAddonCommand,     "", nullptr },
         { "gmlevel",        SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetGmLevelCommand,   "", nullptr },
+        { "gmlevel_realm",  SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetGmLevelRealmCommand, "", nullptr },
         { "password",       SEC_CONSOLE,        true,  &ChatHandler::HandleAccountSetPasswordCommand,  "", nullptr },
         { "locked",         SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleAccountSetLockedCommand,    "", nullptr },
         { nullptr,          0,                  false, nullptr,                                        "", nullptr }

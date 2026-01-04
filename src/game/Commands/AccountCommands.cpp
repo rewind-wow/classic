@@ -119,6 +119,79 @@ bool ChatHandler::HandleAccountSetGmLevelCommand(char* args)
     return true;
 }
 
+bool ChatHandler::HandleAccountSetGmLevelRealmCommand(char* args)
+{
+    char* accountStr = ExtractOptNotLastArg(&args);
+
+    std::string targetAccountName;
+    Player* targetPlayer = nullptr;
+    uint32 targetAccountId = ExtractAccountId(&accountStr, &targetAccountName, &targetPlayer);
+    if (!targetAccountId)
+        return false;
+
+    // only target player different from self allowed
+    if (GetAccountId() == targetAccountId)
+        return false;
+
+    int32 gm;
+    if (!ExtractInt32(&args, gm))
+        return false;
+
+    if (gm < SEC_PLAYER || gm > SEC_ADMINISTRATOR)
+    {
+        SendSysMessage(LANG_BAD_VALUE);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    uint32 targetRealmId;
+    if (!ExtractUInt32(&args, targetRealmId))
+        return false;
+
+    std::unique_ptr<QueryResult> realmCheck(LoginDatabase.PQuery("SELECT 1 FROM `realmlist` WHERE `id` = '%u'", targetRealmId));
+    if (!realmCheck)
+    {
+        PSendSysMessage("Realm %u not found.", targetRealmId);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    // can set security level only for target with less security and to less security that we have
+    // This is also reject self apply in fact
+    if (HasLowerSecurityAccount(nullptr, targetAccountId, true))
+        return false;
+
+    // account can't set security to same or grater level, need more power GM or console
+    AccountTypes plSecurity = GetAccessLevel();
+    if (AccountTypes(gm) >= plSecurity)
+    {
+        SendSysMessage(LANG_YOURS_SECURITY_IS_LOW);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    bool const isCurrentRealm = targetRealmId == realmID;
+
+    if (isCurrentRealm)
+    {
+        if (targetPlayer)
+        {
+            targetPlayer->PSendSysMessage(LANG_YOURS_SECURITY_CHANGED, GetNameLink().c_str(), gm);
+            targetPlayer->GetSession()->SetSecurity(AccountTypes(gm));
+        }
+
+        sAccountMgr.SetSecurity(targetAccountId, AccountTypes(gm));
+    }
+    else
+    {
+        LoginDatabase.PExecute("REPLACE INTO `account_access` (`id`, `gmlevel`, `RealmID`) VALUES (%u, %u, %u)", targetAccountId, gm, targetRealmId);
+    }
+
+    PSendSysMessage("You change security for account %s to %d on realm %u", targetAccountName.c_str(), gm, targetRealmId);
+
+    return true;
+}
+
 // Set password for account
 bool ChatHandler::HandleAccountSetPasswordCommand(char* args)
 {

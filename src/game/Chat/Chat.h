@@ -400,6 +400,7 @@ class ChatHandler
         bool HandleAccountPasswordCommand(char* args);
         bool HandleAccountSetAddonCommand(char* args);
         bool HandleAccountSetGmLevelCommand(char* args);
+        bool HandleAccountSetGmLevelRealmCommand(char* args);
         bool HandleAccountSetPasswordCommand(char* args);
         bool HandleAccountSetLockedCommand(char* args);
 
