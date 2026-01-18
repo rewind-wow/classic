@@ -12,7 +12,7 @@ Use the fork of vmangos-deploy (rewind-deploy) maintained by the Rewind team:
 
 https://github.com/rewind-wow/rewind-deploy
 
-It includes many scripts to manage a wow instance (or many) in a production environment. Docker is recommended. 
+It includes many scripts to manage a wow instance (or many) in a production environment. Docker is recommended. Please see the readme in the repository for more information on environment variables required to run the scripts. 
 
 ### Currently supported builds
 
