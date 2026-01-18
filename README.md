@@ -5,6 +5,15 @@
 
 This project is an independent continuation of the Vmangos core based on Elysium / LightsHope codebases. It is maintained by the Rewind WoW team. This may or may not sync upstream with Vmangos. 
 
+
+### Deployment 
+
+Use the fork of vmangos-deploy (rewind-deploy) maintained by the Rewind team: 
+
+https://github.com/rewind-wow/rewind-deploy
+
+It includes many scripts to manage a wow instance (or many) in a production environment. 
+
 ### Currently supported builds
 
 - 1.12.1.5875+
